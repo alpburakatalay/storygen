@@ -1,0 +1,2 @@
+# storygen
+ABCÇDEFG
