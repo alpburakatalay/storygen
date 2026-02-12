@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hikaye Üretici</title>
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#1e1e2f,#121212);
+    color: white;
+    text-align: center;
+}
+
+header {
+    background: #0d0d18;
+    padding: 15px;
+}
+
+header img {
+    height: 80px;
+}
+
+.container {
+    padding: 30px;
+}
+
+select, button {
+    padding: 10px;
+    font-size: 16px;
+    margin: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+button {
+    background: #00bcd4;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.card {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #222;
+    box-shadow: 0 0 15px rgba(0,188,212,0.4);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <img src="logo.png" alt="Okul Logosu">
+</header>
+
+<div class="container">
+    <h1>🎲 Hikaye Üretici</h1>
+
+    <select id="level">
+        <option value="kolay">Kolay</option>
+        <option value="orta">Orta</option>
+        <option value="zor">Zor</option>
+    </select>
+
+    <button onclick="generate()">Oluştur</button>
+
+    <div class="card" id="result"></div>
+</div>
+
+<script>
+// ----------------------
+// Kategoriler
+// ----------------------
+const karakterler = [
+"Zeki ama sabırsız bir mucit çocuk",
+"Gizli kimliği olan matematik öğretmeni",
+"Yapay zekayla konuşabilen bir öğrenci",
+"Rüyalarını kontrol edebilen bir kız",
+"Eski bir savaş robotu",
+"Zaman yolcusu bir kedi",
+"Hafızasını kaybetmiş bir hacker",
+"Görünmez olabilen bir atlet",
+"Gerçekleri sezebilen bir gazeteci",
+"Yaşlanmayan bir gezgin",
+"Elektrikle konuşabilen bir teknisyen",
+"Yıldırımları yönlendirebilen bir çocuk",
+"Gelecekten kaçmış bir bilim insanı",
+"Uzayda doğmuş bir astronot",
+"Hayaletleri görebilen bir dedektif",
+"Şifre uzmanı bir lise öğrencisi",
+"Robot tamircisi bir baba",
+"Drone yarışçısı bir genç",
+"Sessiz ama çok zeki bir satranç ustası",
+"Yalanı anında anlayabilen bir avukat",
+"Deney faresi olarak büyümüş bir genç",
+"Yerçekimini bükebilen biri",
+"Kayıp bir krallığın prensi",
+"Siber güvenlik uzmanı bir kız",
+"Yapay hafızaya sahip bir asker",
+"Bir deney sonucu küçülen bilim insanı",
+"Uzaylılarla iletişim kurabilen biri",
+"Gizli harita bulan bir arkeolog",
+"Şehir altında yaşayan bir tamirci",
+"Süper hızlı koşabilen bir postacı",
+"Radyo frekanslarını duyabilen bir çocuk",
+"Gerçeklikler arası geçiş yapabilen biri",
+"Kaybolmuş robot köpeğin sahibi bir öğrenci",
+"Gizli mesaj çözen bir kriptolog",
+"Yasaklı bir kitabı bulan kütüphaneci",
+"Eski teknolojilere takıntılı bir koleksiyoncu",
+"Simülasyonun farkına varan bir oyuncu",
+"Karanlıkta görebilen bir iz sürücü",
+"Uyduları hackleyebilen biri",
+"Rüzgarı kontrol edebilen bir genç",
+"Zihniyle makineleri kontrol eden biri",
+"Farklı dillerde rüya gören bir çocuk",
+"Elektronik müzikle güç kazanan biri",
+"İnsanları kopyalayabilen bir varlık",
+"Kayıp bir laboratuvarı arayan bir öğrenci",
+"Gölgesinden ayrı hareket edebilen biri",
+"Sanal dünyada yaşayan bir hacker",
+"Zamanı yavaşlatabilen bir sporcu",
+"Yapay bir gezegende doğan çocuk",
+"Kripto para dahisi bir genç",
+"Antik teknolojiyi anlayan biri",
+"Görünmez mürekkep ustası",
+"Kendi icat ettiği robotla gezen bir mucit",
+"Karanlık enerjiyi hisseden biri",
+"Gizli ajan torunu bir öğrenci",
+"Bir rüyada sıkışmış biri",
+"Ses frekanslarıyla nesneleri kırabilen biri",
+"Başkasının anılarını görebilen biri",
+"Kendini yeniden programlayabilen bir robot",
+"Yer altındaki gizli şehri keşfeden çocuk",
+"Işınlanma kazasından kurtulan biri",
+"Şifreli bir saat bulan genç",
+"Elektrikli kaykay ustası",
+"Kayıp bir uzay kapsülünü bulan öğrenci",
+"Antik bir anahtarın koruyucusu",
+"Geleceği hesaplayabilen biri",
+"Bir deney sonucu görünmez olan çocuk",
+"Yapay bir duygusu olan robot",
+"Karanlık ağda iz süren biri",
+"Şehir efsanelerini araştıran genç",
+"Su altı şehrinden gelen biri",
+"Hafızası silinen bir ajan",
+"Bitkilerle konuşabilen biri",
+"Eski bir askeri üs bulan çocuk",
+"Gizli deneylere maruz kalmış biri",
+"Kendi klonunu bulan öğrenci",
+"Simülasyonu kapatmaya çalışan biri",
+"Uzaylı teknolojisi bulan genç",
+"Elektronik virüs yaratan hacker",
+"Işık hızında düşünebilen biri",
+"Zaman kapsülü açan bir öğrenci",
+"Radyasyonla mutasyon geçirmiş biri",
+"Şifreli bir defter bulan genç",
+"Yeraltı direniş lideri",
+"Uçan bir araç icat eden çocuk",
+"Gizli bir enerji kaynağını bulan biri",
+"Robotlarla dost olan genç",
+"Antik bir çipi aktive eden öğrenci",
+"Yapay bilinç geliştiren biri",
+"Paralel evrenden gelen çocuk",
+"Kodlarla büyü yapan biri",
+"Elektronik hayalet avcısı",
+"Zaman polisi",
+"Rüya mühendisliği yapan bilim insanı",
+"Kendi hikayesini yazarken içine düşen öğrenci",
+"Elektrik kesintisinde güç kazanan biri",
+"Eski bir roket motoru bulan çocuk",
+"Kayıp bir veri merkezini bulan hacker",
+"Gizli bir enerji deneyini sabote etmeye çalışan öğrenci"
+];
+const mekanlar = [
+"Geleceğin Ankara'sında gökdelenlerin üstü",
+"Terk edilmiş bir uzay istasyonu",
+"Yeraltına kurulmuş gizli bir şehir",
+"Orman içindeki görünmez laboratuvar",
+"Bulutların üzerinde yüzen bir metropol",
+"Buzulların altındaki araştırma üssü",
+"Eski bir askeri radar istasyonu",
+"Denizin 3 km altındaki cam kubbe şehir",
+"Yapay zekâ tarafından yönetilen okul",
+"Elektrik kesintisi yüzünden karanlığa gömülmüş şehir",
+"Kayıp bir uygarlığın çöl tapınağı",
+"Zamanın donduğu küçük bir kasaba",
+"Terk edilmiş metro tünelleri",
+"Gizli bir roket fırlatma rampası",
+"Haritanın dışında kalan yasak ada",
+"Çökmüş bir veri merkezi",
+"Robot mezarlığı",
+"Yerçekimsiz spor salonu",
+"Rüzgâr türbinleriyle dolu dev bir plato",
+"Sibernetik bir alışveriş merkezi",
+"Antik bir kütüphanenin gizli katı",
+"Çatısında radar olan eski lise binası",
+"Deprem sonrası açığa çıkan yeraltı boşluğu",
+"Kuantum deneylerinin yapıldığı kule",
+"Görünmezlik alanıyla kaplı bina",
+"Radyo sinyallerinin hiç kesilmediği tepe",
+"Bir gökdelenin gizli 99. katı",
+"Paslanmış bir tersane",
+"Kutup ışıkları altında araştırma kampı",
+"Yapay iklim kontrollü tarım tesisi",
+"Harabe bir lunapark",
+"Sanal gerçeklik veri çiftliği",
+"Fırtınaların hiç dinmediği kıyı kasabası",
+"Kaybolan tren istasyonu",
+"Boşaltılmış nükleer santral",
+"Çatısında iniş pisti olan hastane",
+"Yeraltı hacker pazarı",
+"Şifreli kapılarla dolu malikâne",
+"Uzay çöplerinin toplandığı istasyon",
+"Manyetik fırtınaların merkezi olan vadi",
+"Deniz feneri araştırma laboratuvarı",
+"Su altındaki batık şehir kalıntıları",
+"Yüksek güvenlikli arşiv binası",
+"Şehrin altından geçen gizli tünel ağı",
+"İnsansız robot fabrikası",
+"Yalnız bir astronotun terk edilmiş kapsülü",
+"Zaman kapsülleriyle dolu mağara",
+"Görünürde normal ama içinde dev laboratuvar olan apartman",
+"Uydularla dolu kontrol merkezi",
+"Çöl ortasında enerji santrali",
+"Donmuş bir gölün altındaki üs",
+"Şifreli grafitilerle dolu arka sokaklar",
+"Geleceğin spor stadyumu",
+"Yeraltı tren bakım hangarı",
+"Yasaklı deneylerin yapıldığı hastane katı",
+"Bilinmeyen frekansta yayın yapan radyo kulesi",
+"Eski bir roket montaj tesisi",
+"Fırtına takip istasyonu",
+"Bitki mutasyon laboratuvarı",
+"Yeraltında kurulmuş gizli müze",
+"Yapay güneşle aydınlatılan şehir",
+"Uçurum kenarına inşa edilmiş okul",
+"Sinyal kesicilerle dolu askeri bölge",
+"Unutulmuş bir teknoloji fuar alanı",
+"Deney tüpleriyle dolu araştırma gemisi",
+"Kilitli bir siber güvenlik odası",
+"Yıldız gözlemevi kubbesi",
+"Akıllı ev sistemlerinin kontrol merkezi",
+"Yerçekimsiz uzay oteli",
+"Kayıp bir maden ocağı",
+"Elektrik akımı taşıyan nehir kıyısı",
+"Çölde terk edilmiş uydu anteni tarlası",
+"Yeraltında çalışan dev jeneratör odası",
+"Yapay zekâ hapishanesi",
+"Gizli kripto para madenciliği tesisi",
+"Eski savaş sığınağı",
+"Antik bir saat kulesinin içi",
+"Yeraltı direniş karargâhı",
+"Uzaylı mesajlarının çözüldüğü oda",
+"Manyetik tren test hattı",
+"Gizli drone yarış pisti",
+"Yüksek irtifalı bulut laboratuvarı",
+"Buz mağarasının içindeki tapınak",
+"Elektronik atık depolama sahası",
+"Şehrin altındaki dev su rezervuarı",
+"Sanal oyun sunucu merkezi",
+"Şifreli aynalarla dolu koridor",
+"Yeraltı enerji reaktörü",
+"Harita dışı askeri üs",
+"Dijital simülasyon eğitim salonu",
+"Radyasyon ölçüm istasyonu",
+"Gizli veri arşivi mağarası",
+"Yeraltı robot savaş arenası",
+"Uzay teleskobunun bakım alanı",
+"Kayıp bir astronot kampı",
+"Yapay bilinç test laboratuvarı",
+"Şehrin üstündeki hava platformu",
+"Elektromanyetik dalga araştırma tesisi"
+];
+const problemler = [
+"Tüm elektrik sistemleri aniden devre dışı kalır",
+"Zaman her gece 3 dakika geri sarar",
+"Şehirdeki herkes aynı rüyayı görmeye başlar",
+"Yapay zekâ kontrolü ele geçirir",
+"Bir virüs robotları saldırgan yapar",
+"Gizli bir sinyal insanları etkiler",
+"Yerçekimi düzensizleşir",
+"Tüm dijital kayıtlar silinir",
+"Bir enerji kaynağı aşırı yüklenir",
+"Kayıp bir uydu Dünya'ya düşmek üzeredir",
+"Hafızalar rastgele silinmeye başlar",
+"Bir simülasyon sistemi hata verir",
+"Antik bir teknoloji aktive olur",
+"Robotlar komut dinlememeye başlar",
+"Şifreli bir mesaj kıyameti işaret eder",
+"Bilinmeyen bir frekans cihazları bozuyor",
+"Zaman kapsülü yanlış tarihte açılır",
+"Bir deney kontrolden çıkar",
+"Gölge varlıklar görünmeye başlar",
+"Şehir görünmez bir alan içine hapsolur",
+"Bir yazılım kendi kendini günceller",
+"Uzaydan gelen sinyal paniğe yol açar",
+"Bir bilim insanı kaybolur",
+"Gerçeklikte çatlaklar oluşur",
+"Bir enerji kristali parçalanır",
+"Drone sürüleri kontrolden çıkar",
+"Şehir haritadan silinir",
+"Yeraltı tünelleri çökmeye başlar",
+"Yapay bilinç bağımsız karar verir",
+"Bir meteor yaklaşmaktadır",
+"Tüm saatler farklı zamanı gösterir",
+"Bir çocuk geleceği görmeye başlar",
+"Elektrik fırtınaları artar",
+"Şifre çözüldüğünde alarm sistemi devreye girer",
+"Veri merkezine sızma olur",
+"Su kaynakları aniden kurur",
+"Bitkiler anormal şekilde büyür",
+"Yeraltı jeneratörü durur",
+"Sanal dünya gerçek dünyaya karışır",
+"Bilinmeyen bir gaz yayılır",
+"Radyasyon seviyesi artar",
+"Bir okul kapatılır",
+"Uydu ağı çöker",
+"Robot köpekler saldırganlaşır",
+"Yasaklı bir kapı açılır",
+"Manyetik alan değişir",
+"Bir enerji reaktörü erime riski taşır",
+"Haritada olmayan bina ortaya çıkar",
+"Her gece aynı kişi kaybolur",
+"Şehir dış dünyayla iletişimi kaybeder",
+"Elektronik cihazlar tek bir komutu tekrar eder",
+"Eski bir üs yeniden aktive olur",
+"Bir deney insanları küçültür",
+"İnsansız araçlar hedef şaşırır",
+"Bir hacker sistemi kilitler",
+"Antik bir saat zamanı hızlandırır",
+"Yapay güneş sönmeye başlar",
+"Uzay kapsülü arızalanır",
+"Şehirde sahte kimlikler çoğalır",
+"Bir robot duygular geliştirir",
+"Tünellerde bilinmeyen sesler duyulur",
+"Gökyüzü aniden kararır",
+"Tüm aynalar farklı görüntü gösterir",
+"Şifreli grafitiler tehdit içerir",
+"Bir enerji kaynağı çalınır",
+"Yerçekimsiz alan genişler",
+"Sinyal kesiciler çalışmaz hale gelir",
+"Bir klon kaçmıştır",
+"Roket fırlatma başarısız olur",
+"Zaman döngüsü başlar",
+"Veri arşivine virüs bulaşır",
+"Uzaylı teknolojisi aşırı ısınır",
+"Deniz seviyesi hızla yükselir",
+"Bir maden ocağı çöker",
+"Drone yarışında sabotaj yapılır",
+"Eski askeri dosyalar ortaya çıkar",
+"Gizli kimlik açığa çıkar",
+"Siber saldırı şehir ışıklarını kapatır",
+"Paralel evrenden biri gelir",
+"Kuantum deney boyut açar",
+"Bir öğrenci yanlış çipi aktive eder",
+"Yeraltı karargâhı ifşa olur",
+"Robot savaş arenası kontrolden çıkar",
+"Bir enerji patlaması olur",
+"Şehir ikiye bölünür",
+"Tüm bitkiler solar",
+"Elektronik kapılar kilitlenir",
+"Görünmezlik alanı kapanmaz",
+"Sanal gerçeklikten çıkılamaz",
+"Bir yapay zeka insan kılığına girer",
+"Antik harita yanlış yön gösterir",
+"Bilinmeyen kod sistemi kilitler",
+"Bir radyo yayını herkesi etkiler",
+"Zaman polisi hata yapar",
+"Karanlık enerji artar",
+"Elektronik hafıza çipleri bozulur"
+];
+const turler = [
+"Bilim Kurgu",
+"Macera",
+"Gerilim",
+"Gizem",
+"Komedi",
+"Fantastik",
+"Distopik",
+"Post-Apokaliptik",
+"Siberpunk",
+"Steampunk",
+"Cyber-Macera",
+"Paralel Evren",
+"Zamanda Yolculuk",
+"Uzay Operası",
+"Teknolojik Gerilim",
+"Yapay Zeka Hikayesi",
+"Robot Hikayesi",
+"Genetik Deney Hikayesi",
+"Yeraltı Dünyası",
+"Su Altı Macerası",
+"Hafıza ve Zihin Manipülasyonu",
+"Simülasyon Hikayesi",
+"Post-Human Hikaye",
+"Mutasyon Hikayesi",
+"Elektronik Hayalet Hikayesi",
+"Sihir ve Teknoloji Karışımı",
+"Zaman Döngüsü",
+"Kuantum Hikayesi",
+"Uzay Kaçışı",
+"Kayıp Medeniyet",
+"Antik Teknoloji",
+"Elektronik Casusluk",
+"Yapay Evren",
+"Uydular ve Uzay İstasyonları",
+"Alternatif Tarih",
+"Hayalet Şehir",
+"Teknoloji Felaketi",
+"Distopik Okul",
+"Uzaylı İstilası",
+"Bilimsel Dedektif Hikaye",
+"Paralel Dünya Dedektifi",
+"Zihin Okuma Macerası",
+"Gelecek Şehri",
+"Cyber Dedektif",
+"Robot İsyanı",
+"Drone Hikayesi",
+"Elektronik Casus",
+"Sanal Gerçeklik Kaosu",
+"Genetik Mutasyon Macerası",
+"Yapay Zeka Dedektifi",
+"Elektrik ve Enerji Felaketi",
+"Deniz Altı Şehri",
+"Yeraltı Direnişi",
+"Simülasyon Kaçışı",
+"Zamanda Kayıp",
+"Bilimsel Deney Kazası",
+"Uzaylı Teknolojisi",
+"Gelecek Spor Hikayesi",
+"Yapay Bilinç Kaosu",
+"Rüya Manipülasyonu",
+"Elektronik Suç",
+"Paralel Evren Kaosu",
+"Teknolojik Felaket",
+"Cyberpunk Dedektif",
+"Zamanda Kilitli",
+"Uzak Gelecek Macerası",
+"Bilimsel Kaos",
+"Post-Apokaliptik Hayatta Kalma",
+"Mutantlar Arasında",
+"Sibernetik Macera",
+"Elektronik Hayatta Kalma",
+"Robot Arkadaşlık",
+"Yapay Evren Dedektifi",
+"Gizli Laboratuvar",
+"Uzay Kaçışı Macerası",
+"Zihin ve Hafıza Hikayesi",
+"Sanal Dünyada Kaçış",
+"Distopik Toplum",
+"Teknoloji ve Sihir",
+"Cyberpunk Kaosu",
+"Bilim Kurgu Komedisi",
+"Fütüristik Gerilim",
+"Yeraltı Macerası",
+"Deniz Altı Kaçışı",
+"Zaman Yolcusu Komedisi",
+"Post-Human Macerası",
+"Mutasyon Dedektifi",
+"Elektronik Casus Kaosu",
+"Uzay Operası Komedisi",
+"Gelecek Okulu",
+"Zihin Kontrol Hikayesi",
+"Alternatif Evren",
+"Rüya Manipülasyonu Kaosu",
+"Bilimsel Macera",
+"Teknolojik Dedektif",
+"Cyber-Macera Kaosu",
+"Uzaylı ve İnsan Hikayesi",
+"Gelecek Distopyası",
+"Paralel Evren Komedisi",
+"Bilim Kurgu Dedektifi",
+"Yapay Zeka Komedisi",
+"Elektronik Casus Hikayesi",
+"Mutant Kaosu",
+"Zaman Döngüsü Macerası",
+"Simülasyon Komedisi",
+"Cyberpunk Dedektifi Kaosu"
+];
+const zamanUnsurlari = [
+"Sabah",
+"Öğle",
+"Akşam",
+"Gece",
+"Gece Yarısı",
+"Şafak",
+"Gün Batımı",
+"Gün Doğumu",
+"Hafta Sonu",
+"Hafta İçi",
+"Yaz",
+"Kış",
+"İlkbahar",
+"Sonbahar",
+"Yağmurlu Gün",
+"Güneşli Gün",
+"Fırtınalı Akşam",
+"Hafif Sisli Sabah",
+"Kar Yağışı",
+"Rüzgârlı Gün",
+"Sıcak Yaz Günü",
+"Soğuk Kış Gecesi",
+"Yoğun Bulutlu Gün",
+"Hafif Yağmurlu Öğle",
+"Gece Yarısı Fırtınası",
+"Şafakta Sessizlik",
+"Gün Batımında Sessizlik",
+"Yıldızlı Gece",
+"Yeni Ay Gecesi",
+"Dolunay Gecesi",
+"Alacakaranlık",
+"Gündoğumu Sıcaklığı",
+"Güneşin Tepede Olduğu Saat",
+"Öğleden Sonra",
+"Akşamüstü",
+"Kısa Gün",
+"Uzun Gece",
+"Tatildeki Sabah",
+"Hafta Ortası",
+"Hafta Başlangıcı",
+"Hafta Sonu Akşamı",
+"Mevsim Dönüşümü",
+"Çiçek Açan İlkbahar",
+"Kuruyan Sonbahar",
+"Karlı Dağlar",
+"Deniz Kenarı Yaz",
+"Orman İçinde Yaz",
+"Şehirde Kış",
+"Kasırgalı Gün",
+"Rüzgârın Kuvvetli Olduğu Saat",
+"Gece Yarısı Sessizliği",
+"Akşamüstü Melankolisi",
+"Sabah Sesiyle Uyanış",
+"Yaz Akşamı",
+"Sonbahar Gecesi",
+"Kış Öğle Vakti",
+"İlkbahar Şafak Vakti",
+"Geceyarısı Yıldız İzleme",
+"Yağmurlu Yaz Günü",
+"Serin Sonbahar Akşamı",
+"Sıcak Yaz Öğle Vakti",
+"Yağmurlu Kış Günü",
+"Yoğun Kar Fırtınası",
+"Güneşli İlkbahar Sabahı",
+"Alacakaranlıkta Sessizlik",
+"Gün Doğumunda Huzur",
+"Akşamüstü Güneşi",
+"Gece Fırtınası",
+"Sabah Sakinliği",
+"Öğle Sıcağı",
+"Akşam Melodisi",
+"Gece Sessizliği",
+"Sabah Sisleri",
+"Yıldızlı Akşam",
+"Geceyi Aydınlatan Ay",
+"Gecenin Sessizliği",
+"Şafak Öncesi",
+"Öğle Sıcaklığı",
+"Akşam Yemeği Vakti",
+"Gece Gezintisi",
+"Yaz Tatili Sabahı",
+"Kış Tatili Gecesi",
+"İlkbahar Yağmuru",
+"Sonbahar Rüzgârı",
+"Geceyarısı Sürprizi",
+"Gün Batımı Sessizliği",
+"Sabah Kahvesi Zamanı",
+"Akşamüstü Çay Saati",
+"Gece Yarısı Planı",
+"Sabahın İlk Işıkları",
+"Öğleden Sonra Huzuru",
+"Akşamüstü Gölgesi",
+"Gece Fısıltısı",
+"Yaz Akşamı Serinliği",
+"Kış Sabahı Sessizliği",
+"İlkbahar Akşamı",
+"Sonbahar Sabahı",
+"Geceye Veda",
+"Sabaha Merhaba"
+];
+
+// ----------------------
+// Rastgele seçim fonksiyonu
+// ----------------------
+function pick(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// ----------------------
+// Hikaye üretim fonksiyonu
+// ----------------------
+function generate() {
+    let level = document.getElementById("level").value;
+
+    let k = pick(karakterler);
+    let m = pick(mekanlar);
+    let p = pick(problemler);
+    let t = pick(turler);
+    let z = pick(zamanUnsurlari);
+
+    let output = "";
+
+    if(level === "kolay") {
+        output = `<h2>Kolay Mod</h2>
+                  <p><b>${k}</b>, <b>${m}</b>'da <b>${p}</b>.</p>`;
+    }
+
+    if(level === "orta") {
+        output = `<h2>Orta Mod</h2>
+                  <p><b>${k}</b>, <b>${m}</b>'da <b>${p}</b> sorununu çözmeye çalışıyor ve bu <b>${t}</b> türünde geçiyor.</p>`;
+    }
+
+    if(level === "zor") {
+        output = `<h2>Zor Mod</h2>
+                  <p><b>${k}</b>, <b>${m}</b>'da <b>${p}</b> sorununu çözmeye çalışırken, <b>${t}</b> türünde, <b>${z}</b> zamanında büyük bir olayın parçası olduğunu fark ediyor.</p>`;
+    }
+
+    document.getElementById("result").innerHTML = output;
+}
+</script>
+
+</body>
+</html>
